@@ -165,43 +165,19 @@ BarWidget {
         Repeater {
           model: root.modes
 
-          Rectangle {
+          Button {
             required property var modelData
             width: content.width
-            height: description.implicitHeight + Style.space(20)
-            radius: Style.cornerRadius
-            color: modelData === undefined ? "transparent" : (modelData.value === root.currentMode ? "#334455" : "transparent")
-
-            MouseArea {
-              anchors.fill: parent
-              onClicked: {
-                root.applyMode(modelData)
-                root.popupOpen = false
-              }
-            }
-
-            Column {
-              anchors.fill: parent
-              anchors.margins: Style.space(6)
-              spacing: Style.space(2)
-
-              Text {
-                text: (modelData.value === root.currentMode ? "✓  " : "    ") + modelData.name
-                color: "#ffffff"
-                font.family: root.bar ? root.bar.fontFamily : Style.font.family
-                font.pixelSize: Style.font.body
-              }
-
-              Text {
-                id: description
-                text: modelData.description
-                color: "#ffffff"
-                opacity: 0.7
-                wrapMode: Text.WordWrap
-                width: parent.width
-                font.family: root.bar ? root.bar.fontFamily : Style.font.family
-                font.pixelSize: Style.font.caption
-              }
+            text: modelData.name
+            tooltipText: modelData.description
+            selected: modelData.value === root.currentMode
+            bordered: true
+            leftAlign: true
+            foreground: "#ffffff"
+            fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+            onClicked: {
+              root.applyMode(modelData)
+              root.popupOpen = false
             }
           }
         }
