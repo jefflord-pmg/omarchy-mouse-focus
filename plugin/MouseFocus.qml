@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.3.3"
+  readonly property string pluginVersion: "0.4.0"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
@@ -36,8 +36,7 @@ BarWidget {
 
   function applyMode(mode) {
     if (mode.value === currentMode) return
-    var config = "-- Managed by jlord.mouse-focus.\\nhl.config({\\n  input = {\\n    follow_mouse = " + mode.value + ",\\n  },\\n})\\n"
-    applyProcess.command = ["bash", "-lc", "printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\" && hyprctl reload"]
+    applyProcess.command = ["hyprctl", "keyword", "input:follow_mouse", String(mode.value)]
     applyProcess.running = true
     pendingMode = mode.value
   }

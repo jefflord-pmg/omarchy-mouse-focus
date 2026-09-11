@@ -50,13 +50,15 @@ Mode `3` is not exposed by this widget.
 
 ## Configuration Behavior
 
-Selecting a mode updates `input:follow_mouse` in
-`~/.config/hypr/mouse-focus.lua` and reloads Hyprland. The local installer also
-adds `require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
-already present.
+Selecting a mode applies `input:follow_mouse` immediately through Hyprland's
+runtime configuration. The local installer also installs
+`~/.config/hypr/mouse-focus.lua` and adds
+`require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
+already present, so the setting can be restored when Hyprland reloads.
 
-The installer manages only the plugin directory and the named Hyprland module;
-it does not edit other Hyprland settings.
+The local installer manages only the plugin directory and the named Hyprland
+module; it does not edit other Hyprland settings. Marketplace installation
+does not install or modify Hyprland configuration files.
 
 ## Local Development
 
@@ -91,8 +93,9 @@ Remove this line from `~/.config/hypr/input.lua`:
 require("hypr.mouse-focus")
 ```
 
-For local development, `./uninstall.sh` removes the plugin directory and
-managed Hyprland module, but does not edit `shell.json` or `input.lua`.
+For local development, `./uninstall.sh` removes the plugin directory, managed
+Hyprland module, and the exact `require("hypr.mouse-focus")` line added to
+`input.lua`. It does not edit `shell.json`.
 
 ## Dependencies
 
