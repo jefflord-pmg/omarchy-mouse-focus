@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.4.1"
+  readonly property string pluginVersion: "0.5.0"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },

@@ -8,7 +8,7 @@ hypr_dir="$HOME/.config/hypr"
 mkdir -p "$HOME/.config/omarchy/plugins" "$hypr_dir"
 rm -rf "$plugin_dir"
 mkdir -p "$plugin_dir"
-cp "$repo_dir/plugin/manifest.json" "$repo_dir/plugin/MouseFocus.qml" "$plugin_dir/"
+cp "$repo_dir/manifest.json" "$repo_dir/MouseFocus.qml" "$plugin_dir/"
 cp "$repo_dir/hypr/mouse-focus.lua" "$hypr_dir/"
 
 if ! grep -q 'require("hypr.mouse-focus")' "$hypr_dir/input.lua"; then

@@ -6,7 +6,7 @@ one button for each mode. Right-click does nothing. The current
 mode is shown as the selected/pressed button; clicking another button applies
 it immediately.
 
-![Mouse focus selector](screenshots/mouse-focus-selector.png)
+![Mouse focus selector](preview.png)
 
 Third-party plugins run as unsandboxed code inside the Omarchy shell.
 
