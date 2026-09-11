@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.5.0"
+  readonly property string pluginVersion: "0.6.0"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
@@ -17,6 +17,7 @@ BarWidget {
   ]
   property int currentMode: 2
   property bool popupOpen: false
+  property bool persistEnabled: false
   property string statusMessage: ""
   property int pendingMode: -1
 
@@ -39,6 +40,13 @@ BarWidget {
     applyProcess.command = ["hyprctl", "eval", "hl.config({ input = { follow_mouse = " + mode.value + " } })"]
     applyProcess.running = true
     pendingMode = mode.value
+    if (persistEnabled) persistMode(mode.value)
+  }
+
+  function persistMode(value) {
+    var config = "-- Managed by jlord.mouse-focus.\\nhl.config({\\n  input = {\\n    follow_mouse = " + value + ",\\n  },\\n})\\n"
+    persistProcess.command = ["bash", "-lc", "set -e; mkdir -p \"$HOME/.config/hypr\"; printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\"; touch \"$HOME/.config/hypr/input.lua\"; if ! grep -Fqx 'require(\"hypr.mouse-focus\")' \"$HOME/.config/hypr/input.lua\"; then printf '\\nrequire(\"hypr.mouse-focus\")\\n' >> \"$HOME/.config/hypr/input.lua\"; fi"]
+    persistProcess.running = true
   }
 
   function showError() {
@@ -84,6 +92,13 @@ BarWidget {
         root.showError()
       }
       root.pendingMode = -1
+    }
+  }
+
+  Process {
+    id: persistProcess
+    onExited: function(exitCode) {
+      if (exitCode !== 0) root.showError()
     }
   }
 
@@ -174,6 +189,19 @@ BarWidget {
               root.applyMode(modelData)
               root.popupOpen = false
             }
+          }
+        }
+
+        Toggle {
+          width: content.width
+          label: "Persist"
+          description: "Save the selected mode to Hyprland configuration files."
+          foreground: "#ffffff"
+          fontFamily: root.bar ? root.bar.fontFamily : Style.font.family
+          checked: root.persistEnabled
+          onClicked: {
+            root.persistEnabled = !root.persistEnabled
+            if (root.persistEnabled) root.persistMode(root.currentMode)
           }
         }
 

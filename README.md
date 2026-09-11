@@ -26,9 +26,9 @@ Then add the widget to the center section of `~/.config/omarchy/shell.json`:
 }
 ```
 
-Marketplace installation does not modify your Hyprland configuration. Selecting
-a mode in the widget is an explicit action that applies the selected
-`input:follow_mouse` value to the running Hyprland session.
+Marketplace installation does not modify your Hyprland configuration by
+default. Selecting a mode in the widget is an explicit action that applies the
+selected `input:follow_mouse` value to the running Hyprland session.
 
 ## Modes
 
@@ -45,6 +45,7 @@ Mode `3` is not exposed by this widget.
 | Left click | Open or close the mode selector |
 | Right click | No action |
 | Middle click | Refresh the current Hyprland value |
+| Persist toggle | Opt in to saving the selected mode in Hyprland configuration files |
 
 ## Configuration Behavior
 
@@ -52,11 +53,18 @@ Selecting a mode applies `input:follow_mouse` immediately through Hyprland's
 Lua runtime configuration. The change is made only after selecting a mode in
 the widget.
 
-The local installer manages the plugin directory and the named Hyprland module.
-It overwrites `~/.config/hypr/mouse-focus.lua` and adds
-`require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
-already present. Use the local installer only if you want that managed module
-to restore the setting after a Hyprland reload.
+Persistence is disabled by default. Enabling `Persist` in the selector is
+explicit consent for the plugin to manage these two files:
+
+- `~/.config/hypr/mouse-focus.lua`, containing the selected mode
+- `~/.config/hypr/input.lua`, containing `require("hypr.mouse-focus")`
+
+While enabled, selecting another mode updates the managed module as well as
+the running Hyprland setting. Turning persistence off stops future writes but
+does not remove the files or require line.
+
+The local and marketplace installers both leave persistence disabled. Use the
+`Persist` toggle when you want the plugin to manage these files.
 
 ## Local Development
 
@@ -77,9 +85,8 @@ Remove the marketplace plugin with:
 omarchy plugin remove jlord.mouse-focus
 ```
 
-Then remove the widget entry from `~/.config/omarchy/shell.json` and remove the
-Hyprland module require and file if they were installed manually or by the
-local installer:
+Then remove the widget entry from `~/.config/omarchy/shell.json`. If you
+enabled `Persist`, also remove the managed Hyprland file:
 
 ```bash
 rm -f ~/.config/hypr/mouse-focus.lua
@@ -91,15 +98,15 @@ Remove this line from `~/.config/hypr/input.lua`:
 require("hypr.mouse-focus")
 ```
 
-For local development, `./uninstall.sh` removes the plugin directory, managed
-Hyprland module, and the exact `require("hypr.mouse-focus")` line added to
-`input.lua`. It does not edit `shell.json`.
+Remove the matching `require("hypr.mouse-focus")` line from
+`~/.config/hypr/input.lua` if persistence was enabled. For local development,
+`./uninstall.sh` removes the plugin directory but does not remove persisted
+Hyprland files or edit `shell.json`.
 
 ## Dependencies
 
 - Omarchy Quattro
 - Hyprland with the `input:follow_mouse` option
-- A user Hyprland input configuration that loads `hypr.mouse-focus`
 
 ## License
 
