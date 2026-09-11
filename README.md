@@ -1,17 +1,16 @@
 # Omarchy Mouse Focus
 
 `jlord.mouse-focus` is an Omarchy bar widget for selecting Hyprland's
-`input:follow_mouse` behavior. Left-click the target icon to cycle to the next
-mode. Right-click opens a window with one button for each mode. The current
+`input:follow_mouse` behavior. Left-click the target icon to open a window with
+one button for each mode. Right-click does nothing. The current
 mode is shown as the selected/pressed button; clicking another button applies
 it immediately.
 
 ## Modes
 
-- `Click` (`follow_mouse = 0`): focus changes when clicking a window.
-- `Hover` (`follow_mouse = 1`): focus follows the pointer.
-- `Hover on entry` (`follow_mouse = 2`): focus changes when entering another window.
-- `Hover through floating` (`follow_mouse = 3`): focus follows the pointer through floating windows.
+- `Click Focus` (`follow_mouse = 0`): cursor movement will not change focus.
+- `Click Focus, scroll under pointer` (`follow_mouse = 2`): cursor focus is detached from keyboard focus. Clicking on a window moves keyboard focus to that window.
+- `Hover Focus` (`follow_mouse = 1`): cursor movement always changes focus to the window under the cursor.
 
 ## Installation
 

@@ -8,13 +8,12 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.2.2"
+  readonly property string pluginVersion: "0.3.3"
 
   readonly property var modes: [
-    { value: 0, name: "Click", description: "Focus changes when you click a window." },
-    { value: 1, name: "Hover", description: "Focus follows the pointer." },
-    { value: 2, name: "Hover on entry", description: "Focus changes when entering another window." },
-    { value: 3, name: "Hover through floating", description: "Focus follows the pointer through floating windows." }
+    { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
+    { value: 2, name: "Click Focus, scroll under pointer", description: "Cursor focus is detached from keyboard focus. Clicking on a window moves keyboard focus to that window." },
+    { value: 1, name: "Hover Focus", description: "Cursor movement always changes focus to the window under the cursor." }
   ]
   property int currentMode: 2
   property bool popupOpen: false
@@ -28,7 +27,7 @@ BarWidget {
     for (var i = 0; i < modes.length; i++) {
       if (modes[i].value === value) return modes[i]
     }
-    return modes[0]
+    return { value: value, name: "Unsupported mode", description: "This follow_mouse value is not available from this widget." }
   }
 
   function refresh() {
@@ -41,21 +40,6 @@ BarWidget {
     applyProcess.command = ["bash", "-lc", "printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\" && hyprctl reload"]
     applyProcess.running = true
     pendingMode = mode.value
-  }
-
-  function cycleMode() {
-    var nextIndex = 0
-    for (var i = 0; i < modes.length; i++) {
-      if (modes[i].value === currentMode) {
-        nextIndex = (i + 1) % modes.length
-        break
-      }
-    }
-    applyMode(modes[nextIndex])
-  }
-
-  function resetMode() {
-    applyMode({ value: 1, name: "Hover", description: "Focus follows the pointer." })
   }
 
   function showError() {
@@ -111,13 +95,9 @@ BarWidget {
     text: root.iconText
     fontFamily: "omarchy"
     horizontalMargin: 7.5
-    tooltipText: "Mouse focus: " + root.activeMode.name
-      + "\nLeft click: Cycle mode"
-      + "\nRight click: Choose mode"
-      + "\nVersion: " + root.pluginVersion
+    tooltipText: "Current mode: " + root.activeMode.name + " | Version: " + root.pluginVersion
     onPressed: function(mouseButton) {
-      if (mouseButton === Qt.LeftButton) root.cycleMode()
-      else if (mouseButton === Qt.RightButton) root.popupOpen = !root.popupOpen
+      if (mouseButton === Qt.LeftButton) root.popupOpen = !root.popupOpen
       else if (mouseButton === Qt.MiddleButton) root.refresh()
     }
   }
@@ -138,7 +118,7 @@ BarWidget {
 
     Rectangle {
       id: card
-      implicitWidth: Style.space(250)
+      implicitWidth: Style.space(280)
       implicitHeight: content.implicitHeight + Style.space(24)
       color: "#202020"
       border.color: "#666666"
@@ -198,13 +178,6 @@ BarWidget {
           }
         }
 
-        Text {
-          text: "Right click: reset to Hyprland default"
-          color: "#ffffff"
-          opacity: 0.6
-          font.family: root.bar ? root.bar.fontFamily : Style.font.family
-          font.pixelSize: Style.font.caption
-        }
       }
     }
   }
