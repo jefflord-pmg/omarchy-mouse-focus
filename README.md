@@ -51,7 +51,7 @@ Mode `3` is not exposed by this widget.
 ## Configuration Behavior
 
 Selecting a mode applies `input:follow_mouse` immediately through Hyprland's
-runtime configuration. The local installer also installs
+Lua runtime configuration. The local installer also installs
 `~/.config/hypr/mouse-focus.lua` and adds
 `require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
 already present, so the setting can be restored when Hyprland reloads.

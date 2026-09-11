@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.4.0"
+  readonly property string pluginVersion: "0.4.1"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
@@ -36,7 +36,7 @@ BarWidget {
 
   function applyMode(mode) {
     if (mode.value === currentMode) return
-    applyProcess.command = ["hyprctl", "keyword", "input:follow_mouse", String(mode.value)]
+    applyProcess.command = ["hyprctl", "eval", "hl.config({ input = { follow_mouse = " + mode.value + " } })"]
     applyProcess.running = true
     pendingMode = mode.value
   }
