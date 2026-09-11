@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.2.1"
+  readonly property string pluginVersion: "0.2.2"
 
   readonly property var modes: [
     { value: 0, name: "Click", description: "Focus changes when you click a window." },
@@ -138,13 +138,23 @@ BarWidget {
 
     Rectangle {
       id: card
-      anchors.centerIn: parent
       implicitWidth: Style.space(250)
       implicitHeight: content.implicitHeight + Style.space(24)
       color: "#202020"
       border.color: "#666666"
       border.width: 1
       radius: Style.cornerRadius
+
+      anchors.top: root.bar && root.bar.position === "top" ? parent.top : undefined
+      anchors.bottom: root.bar && root.bar.position === "bottom" ? parent.bottom : undefined
+      anchors.left: root.bar && root.bar.position === "left" ? parent.left : undefined
+      anchors.right: root.bar && root.bar.position === "right" ? parent.right : undefined
+      anchors.horizontalCenter: root.bar && (root.bar.position === "top" || root.bar.position === "bottom") ? parent.horizontalCenter : undefined
+      anchors.verticalCenter: root.bar && (root.bar.position === "left" || root.bar.position === "right") ? parent.verticalCenter : undefined
+      anchors.topMargin: root.bar && root.bar.position === "top" ? root.bar.barSize + 8 : 0
+      anchors.bottomMargin: root.bar && root.bar.position === "bottom" ? root.bar.barSize + 8 : 0
+      anchors.leftMargin: root.bar && root.bar.position === "left" ? root.bar.barSize + 8 : 0
+      anchors.rightMargin: root.bar && root.bar.position === "right" ? root.bar.barSize + 8 : 0
 
       focus: true
       Keys.onEscapePressed: root.popupOpen = false
