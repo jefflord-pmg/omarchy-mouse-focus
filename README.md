@@ -26,11 +26,9 @@ Then add the widget to the center section of `~/.config/omarchy/shell.json`:
 }
 ```
 
-The plugin needs the managed Hyprland module loaded from your input config:
-
-```lua
-require("hypr.mouse-focus")
-```
+Marketplace installation does not modify your Hyprland configuration. Selecting
+a mode in the widget is an explicit action that applies the selected
+`input:follow_mouse` value to the running Hyprland session.
 
 ## Modes
 
@@ -51,14 +49,14 @@ Mode `3` is not exposed by this widget.
 ## Configuration Behavior
 
 Selecting a mode applies `input:follow_mouse` immediately through Hyprland's
-Lua runtime configuration. The local installer also installs
-`~/.config/hypr/mouse-focus.lua` and adds
-`require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
-already present, so the setting can be restored when Hyprland reloads.
+Lua runtime configuration. The change is made only after selecting a mode in
+the widget.
 
-The local installer manages only the plugin directory and the named Hyprland
-module; it does not edit other Hyprland settings. Marketplace installation
-does not install or modify Hyprland configuration files.
+The local installer manages the plugin directory and the named Hyprland module.
+It overwrites `~/.config/hypr/mouse-focus.lua` and adds
+`require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
+already present. Use the local installer only if you want that managed module
+to restore the setting after a Hyprland reload.
 
 ## Local Development
 
