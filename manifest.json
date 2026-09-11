@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "id": "jlord.mouse-focus",
+  "name": "Mouse focus",
+  "version": "0.3.3",
+  "author": "jlord",
+  "description": "Choose how mouse movement changes Hyprland focus",
+  "kinds": [
+    "bar-widget"
+  ],
+  "entryPoints": {
+    "barWidget": "plugin/MouseFocus.qml"
+  }
+}
