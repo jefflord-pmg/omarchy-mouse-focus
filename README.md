@@ -6,6 +6,8 @@ one button for each mode. Right-click does nothing. The current
 mode is shown as the selected/pressed button; clicking another button applies
 it immediately.
 
+![Mouse focus selector](screenshots/mouse-focus-selector.png)
+
 ## Modes
 
 - `Click Focus` (`follow_mouse = 0`): cursor movement will not change focus.
