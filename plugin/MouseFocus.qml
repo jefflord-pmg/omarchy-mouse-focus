@@ -1,13 +1,14 @@
 import QtQuick
 import Quickshell
 import Quickshell.Io
+import Quickshell.Wayland
 import qs.Commons
 import qs.Ui
 
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.2.0"
+  readonly property string pluginVersion: "0.2.1"
 
   readonly property var modes: [
     { value: 0, name: "Click", description: "Focus changes when you click a window." },
@@ -92,8 +93,7 @@ BarWidget {
 
   Process {
     id: applyProcess
-    onRunningChanged: {
-      if (running) return
+    onExited: function(exitCode) {
       if (exitCode === 0) {
         root.currentMode = root.pendingMode
         root.statusMessage = ""
@@ -122,37 +122,23 @@ BarWidget {
     }
   }
 
-  PopupWindow {
+  PanelWindow {
     id: popup
     visible: root.popupOpen
     color: "transparent"
-    implicitWidth: card.implicitWidth
-    implicitHeight: card.implicitHeight
-
-    anchor {
-      window: button.Window.window
-      adjustment: PopupAdjustment.Slide
-      edges: Edges.Top | Edges.Left
-      gravity: Edges.Bottom | Edges.Right
-      rect.width: 1
-      rect.height: 1
-      onAnchoring: {
-        var localX = button.width / 2 - popup.implicitWidth / 2
-        var localY = button.height + 6
-        if (root.bar && root.bar.position === "bottom") localY = -popup.implicitHeight - 6
-        var point = popup.anchor.window.contentItem.mapFromItem(button, localX, localY)
-        popup.anchor.rect.x = Math.round(point.x)
-        popup.anchor.rect.y = Math.round(point.y)
-      }
-    }
+    anchors { top: true; bottom: true; left: true; right: true }
+    exclusionMode: ExclusionMode.Ignore
+    WlrLayershell.namespace: "jlord-mouse-focus"
+    WlrLayershell.layer: WlrLayer.Overlay
 
     MouseArea {
       anchors.fill: parent
-      onClicked: mouse.accepted = true
+      onClicked: root.popupOpen = false
     }
 
     Rectangle {
       id: card
+      anchors.centerIn: parent
       implicitWidth: Style.space(250)
       implicitHeight: content.implicitHeight + Style.space(24)
       color: "#202020"
@@ -162,6 +148,11 @@ BarWidget {
 
       focus: true
       Keys.onEscapePressed: root.popupOpen = false
+
+      MouseArea {
+        anchors.fill: parent
+        onClicked: mouse.accepted = true
+      }
 
       Column {
         id: content
