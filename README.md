@@ -8,22 +8,17 @@ it immediately.
 
 ![Mouse focus selector](screenshots/mouse-focus-selector.png)
 
-## Modes
+Third-party plugins run as unsandboxed code inside the Omarchy shell.
 
-- `Click Focus` (`follow_mouse = 0`): cursor movement will not change focus.
-- `Click Focus, scroll under pointer` (`follow_mouse = 2`): cursor focus is detached from keyboard focus. Clicking on a window moves keyboard focus to that window.
-- `Hover Focus` (`follow_mouse = 1`): cursor movement always changes focus to the window under the cursor.
+## Install From Marketplace
 
-## Installation
-
-Run:
+Install and enable the plugin with:
 
 ```bash
-./install.sh
+omarchy plugin add https://github.com/jefflord-pmg/omarchy-mouse-focus.git --enable
 ```
 
-Then add this widget before the clock in the center section of
-`~/.config/omarchy/shell.json`:
+Then add the widget to the center section of `~/.config/omarchy/shell.json`:
 
 ```json
 {
@@ -31,28 +26,80 @@ Then add this widget before the clock in the center section of
 }
 ```
 
-The installer copies the plugin to `~/.config/omarchy/plugins/` and installs
-the managed Hyprland module at `~/.config/hypr/mouse-focus.lua`.
-
-The user's `~/.config/hypr/input.lua` must load the module:
+The plugin needs the managed Hyprland module loaded from your input config:
 
 ```lua
 require("hypr.mouse-focus")
 ```
 
-## Uninstallation
+## Modes
 
-Run:
+- `Click Focus` (`follow_mouse = 0`): cursor movement will not change focus.
+- `Click Focus, scroll under pointer` (`follow_mouse = 2`): cursor focus is detached from keyboard focus. Clicking on a window moves keyboard focus to that window.
+- `Hover Focus` (`follow_mouse = 1`): cursor movement always changes focus to the window under the cursor.
+
+Mode `3` is not exposed by this widget.
+
+## Controls
+
+| Input | Action |
+| --- | --- |
+| Left click | Open or close the mode selector |
+| Right click | No action |
+| Middle click | Refresh the current Hyprland value |
+
+## Configuration Behavior
+
+Selecting a mode updates `input:follow_mouse` in
+`~/.config/hypr/mouse-focus.lua` and reloads Hyprland. The local installer also
+adds `require("hypr.mouse-focus")` to `~/.config/hypr/input.lua` if it is not
+already present.
+
+The installer manages only the plugin directory and the named Hyprland module;
+it does not edit other Hyprland settings.
+
+## Local Development
+
+The repository includes an installer for local development. Run:
 
 ```bash
-./uninstall.sh
+./install.sh
 ```
 
-Also remove the widget entry from `~/.config/omarchy/shell.json`. The uninstall
-script does not edit that file automatically.
+After editing the repository copy, rerun `./install.sh` to copy it into the
+active Omarchy plugin directory.
 
-## Development
+## Remove
 
-The active installed copy is separate from this repository. After editing the
-repository copy, rerun `./install.sh` to copy it into the Omarchy plugin
-directory.
+Remove the marketplace plugin with:
+
+```bash
+omarchy plugin remove jlord.mouse-focus
+```
+
+Then remove the widget entry from `~/.config/omarchy/shell.json` and remove the
+Hyprland module require and file if they were installed manually or by the
+local installer:
+
+```bash
+rm -f ~/.config/hypr/mouse-focus.lua
+```
+
+Remove this line from `~/.config/hypr/input.lua`:
+
+```lua
+require("hypr.mouse-focus")
+```
+
+For local development, `./uninstall.sh` removes the plugin directory and
+managed Hyprland module, but does not edit `shell.json` or `input.lua`.
+
+## Dependencies
+
+- Omarchy Quattro
+- Hyprland with the `input:follow_mouse` option
+- A user Hyprland input configuration that loads `hypr.mouse-focus`
+
+## License
+
+[MIT](LICENSE) © 2026 jlord
