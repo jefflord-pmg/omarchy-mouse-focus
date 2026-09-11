@@ -7,6 +7,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
+  readonly property string pluginVersion: "0.2.0"
 
   readonly property var modes: [
     { value: 0, name: "Click", description: "Focus changes when you click a window." },
@@ -39,6 +40,17 @@ BarWidget {
     applyProcess.command = ["bash", "-lc", "printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\" && hyprctl reload"]
     applyProcess.running = true
     pendingMode = mode.value
+  }
+
+  function cycleMode() {
+    var nextIndex = 0
+    for (var i = 0; i < modes.length; i++) {
+      if (modes[i].value === currentMode) {
+        nextIndex = (i + 1) % modes.length
+        break
+      }
+    }
+    applyMode(modes[nextIndex])
   }
 
   function resetMode() {
@@ -99,10 +111,13 @@ BarWidget {
     text: root.iconText
     fontFamily: "omarchy"
     horizontalMargin: 7.5
-    tooltipText: "Mouse focus: " + root.activeMode.name + "\nLeft click: Choose focus mode"
+    tooltipText: "Mouse focus: " + root.activeMode.name
+      + "\nLeft click: Cycle mode"
+      + "\nRight click: Choose mode"
+      + "\nVersion: " + root.pluginVersion
     onPressed: function(mouseButton) {
-      if (mouseButton === Qt.LeftButton) root.popupOpen = !root.popupOpen
-      else if (mouseButton === Qt.RightButton) root.resetMode()
+      if (mouseButton === Qt.LeftButton) root.cycleMode()
+      else if (mouseButton === Qt.RightButton) root.popupOpen = !root.popupOpen
       else if (mouseButton === Qt.MiddleButton) root.refresh()
     }
   }

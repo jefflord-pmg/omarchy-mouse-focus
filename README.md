@@ -1,9 +1,10 @@
 # Omarchy Mouse Focus
 
 `jlord.mouse-focus` is an Omarchy bar widget for selecting Hyprland's
-`input:follow_mouse` behavior. Left-click the target icon to open a window with
-one button for each mode. The current mode is shown as the selected/pressed
-button; clicking another button applies it immediately.
+`input:follow_mouse` behavior. Left-click the target icon to cycle to the next
+mode. Right-click opens a window with one button for each mode. The current
+mode is shown as the selected/pressed button; clicking another button applies
+it immediately.
 
 ## Modes
 
