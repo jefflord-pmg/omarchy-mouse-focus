@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.6.0"
+  readonly property string pluginVersion: "0.6.1"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
@@ -20,6 +20,7 @@ BarWidget {
   property bool persistEnabled: false
   property string statusMessage: ""
   property int pendingMode: -1
+  property int requestedMode: -1
 
   readonly property var activeMode: modeForValue(currentMode)
   readonly property string iconText: "\uE8D4"
@@ -40,6 +41,7 @@ BarWidget {
     applyProcess.command = ["hyprctl", "eval", "hl.config({ input = { follow_mouse = " + mode.value + " } })"]
     applyProcess.running = true
     pendingMode = mode.value
+    requestedMode = mode.value
     if (persistEnabled) persistMode(mode.value)
   }
 
@@ -74,8 +76,12 @@ BarWidget {
       onStreamFinished: {
         try {
           var result = JSON.parse(text || "{}")
-          if (result.int !== undefined && result.int >= 0 && result.int <= 3)
-            root.currentMode = result.int
+          if (result.int !== undefined && result.int >= 0 && result.int <= 3) {
+            if (root.requestedMode === -1 || result.int === root.requestedMode) {
+              root.currentMode = result.int
+              if (root.requestedMode === result.int) root.requestedMode = -1
+            }
+          }
         } catch (error) {
         }
       }
@@ -90,6 +96,7 @@ BarWidget {
         root.statusMessage = ""
       } else {
         root.showError()
+        root.requestedMode = -1
       }
       root.pendingMode = -1
     }

@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "jlord.mouse-focus",
   "name": "Mouse focus",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "author": "jlord",
   "license": "MIT",
   "description": "Choose how mouse movement changes Hyprland focus",
