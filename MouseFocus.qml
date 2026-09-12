@@ -8,7 +8,7 @@ import qs.Ui
 BarWidget {
   id: root
   moduleName: "jlord.mouse-focus"
-  readonly property string pluginVersion: "0.6.1"
+  readonly property string pluginVersion: "0.6.2"
 
   readonly property var modes: [
     { value: 0, name: "Click Focus", description: "Cursor movement will not change focus." },
@@ -47,7 +47,7 @@ BarWidget {
 
   function persistMode(value) {
     var config = "-- Managed by jlord.mouse-focus.\\nhl.config({\\n  input = {\\n    follow_mouse = " + value + ",\\n  },\\n})\\n"
-    persistProcess.command = ["bash", "-lc", "set -e; mkdir -p \"$HOME/.config/hypr\"; printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\"; touch \"$HOME/.config/hypr/input.lua\"; if ! grep -Fqx 'require(\"hypr.mouse-focus\")' \"$HOME/.config/hypr/input.lua\"; then printf '\\nrequire(\"hypr.mouse-focus\")\\n' >> \"$HOME/.config/hypr/input.lua\"; fi"]
+    persistProcess.command = ["bash", "-lc", "set -e; mkdir -p \"$HOME/.config/hypr\"; printf '%b' \"" + config + "\" > \"$HOME/.config/hypr/mouse-focus.lua\"; touch \"$HOME/.config/hypr/input.lua\"; sed -i '/^require(\"hypr\\.mouse-focus\")$/d' \"$HOME/.config/hypr/input.lua\"; printf '\\nrequire(\"hypr.mouse-focus\")\\n' >> \"$HOME/.config/hypr/input.lua\""]
     persistProcess.running = true
   }
 
